@@ -1,9 +1,9 @@
 {
   "scripts": {
     "build": "tsc",
-    "docker-build": "docker build -t jayfong/yapi:latest .",
+    "docker-build": "docker build -t ardorzhang/yapi:latest .",
     "docker-down": "docker-compose down",
-    "docker-up": "docker-compose down && docker-compose up"
+    "docker-up": "docker-compose down && docker-compose up -d"
   },
   "dependencies": {
     "@types/fs-extra": "9.0.1",

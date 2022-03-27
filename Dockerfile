@@ -1,12 +1,12 @@
 ######## 构建 ########
-FROM --platform=${BUILDPLATFORM:-amd64} node:12.16.3-alpine3.11 as builder
+FROM --platform=${BUILDPLATFORM:-amd64} node:14.17.5-alpine3.11 as builder
 
 # 安装构建工具
 RUN apk add --update --no-cache ca-certificates curl wget cmake build-base git bash python make gcc g++ zlib-dev autoconf automake file nasm \
   && update-ca-certificates
 
 # YApi 版本
-ENV YAPI_VERSION=1.10.2
+ENV BARNCH=feature/add-json-to-ts-interface
 
 # 编译脚本
 WORKDIR /yapi/scripts
@@ -17,10 +17,10 @@ WORKDIR /yapi/vendors
 
 # 拉取 YApi 源码
 RUN git clone \
-  --branch "v${YAPI_VERSION}" \
+  --branch ${BARNCH} \
   --single-branch \
   --depth 1 \
-  https://github.com/YMFE/yapi.git .
+  https://github.com/ardor-zhang/yapi.git .
 
 # 拷贝启动脚本
 RUN cp /yapi/scripts/start.js ./start.js
@@ -32,20 +32,20 @@ RUN node /yapi/scripts/prepare.js $(pwd)
 RUN yarn
 
 # 清理文件
-RUN node /yapi/scripts/clean.js $(pwd)
+# RUN node /yapi/scripts/clean.js $(pwd)
 
 # 构建应用
 RUN yarn build-client
 
 # 再次清理以删除构建缓存文件
-RUN node /yapi/scripts/clean.js $(pwd)
+# RUN node /yapi/scripts/clean.js $(pwd)
 
 # 删除脚本
 RUN rm -rf /yapi/scripts
 
 
 ######## 镜像 ########
-FROM node:12.16.3-alpine3.11
+FROM node:14.17.5-alpine3.11
 
 WORKDIR /yapi
 
